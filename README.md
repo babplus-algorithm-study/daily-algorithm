@@ -25,7 +25,7 @@
 | 🟢 **월요일**  | 구현            |  [구현 문제집 1](https://www.acmicpc.net/workbook/view/1152), [구현 문제집 2](https://www.acmicpc.net/workbook/view/2771) |
 | 🟡 **화요일**  | 동적 계획법 (DP)  | [DP 문제집](https://www.acmicpc.net/workbook/view/2163) |
 | 🔵 **수요일**  | 라이브 코딩 / 스터디 | - |
-| 🟠 **목요일**  | 그래프 알고리즘    | [그래프 문제집](https://www.acmicpc.net/workbook/view/1152) |
+| 🟠 **목요일**  | 그래프 알고리즘    | [그래프 문제집](https://school.programmers.co.kr/learn/challenges?order=recent&partIds=58464%2C37527%2C31236%2C25448%2C21366%2C20069%2C17214%2C12286%2C22586%2C18498%2C9317&page=1) |
 | 🔴 **금요일**  | 그리디 알고리즘    | [그리디 문제집](https://www.acmicpc.net/workbook/view/3978) |
 
 <br>
