@@ -31,7 +31,7 @@
 <br>
 
 ## 인증 진행 상황
-👉 [Wiki 인증 진행 상황 페이지](https://github.com/hi-min-study/daliy-algorithm-study/wiki/%EC%9D%B8%EC%A6%9D-%EC%A7%84%ED%96%89-%EC%83%81%ED%99%A9)
+👉 [Wiki 인증 진행 상황 페이지](https://github.com/babplus-algorithm-study/daily-algorithm/wiki/%EC%9D%B8%EC%A6%9D-%EC%A7%84%ED%96%89-%EC%83%81%ED%99%A9)
 
 <br>
 
