@@ -1,3 +1,4 @@
+```
 #include <iostream>
 #include <vector>
 #include <climits>
@@ -62,3 +63,4 @@ int main() {
 	cout << calMax << "\n";
 	cout << calMin;
 }
+```
