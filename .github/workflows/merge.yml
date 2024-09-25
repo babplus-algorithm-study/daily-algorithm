@@ -1,0 +1,32 @@
+name: Auto Merge PR
+
+on:
+  schedule:
+    - cron: '0 0 * * *'  # 매일 자정
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'  
+
+    - name: Install dependencies
+      run: npm install  
+
+    - name: Merge pull requests
+      run: |
+        # PR 목록 가져오기
+        PRS=$(gh pr list --state open --base main --json number --jq '.[].number')
+        for pr in $PRS; do
+          echo "Merging PR #$pr"
+          gh pr merge $pr --merge --admin
+        done
+      env:
+        GITHUB_TOKEN: ${{ secrets.TOKEN }}
