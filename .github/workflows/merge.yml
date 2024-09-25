@@ -2,7 +2,7 @@ name: Auto Merge PR
 
 on:
   schedule:
-    - cron: '*/1 * * * *'  # 매일 자정
+    - cron: '15 * * * *'  # 매일 자정
 
 jobs:
   merge:
