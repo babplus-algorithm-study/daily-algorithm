@@ -1,8 +1,8 @@
 name: Auto Merge PR
 
 on:
-  schedule:
-    - cron: '15 * * * *'  # 매일 자정
+  pull_request:
+    types: [opened, reopened, synchronize]  # PR이 생성, 재열기, 업데이트될 때 트리거
 
 jobs:
   merge:
