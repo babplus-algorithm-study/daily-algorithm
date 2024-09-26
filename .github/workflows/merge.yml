@@ -22,8 +22,11 @@ jobs:
 
     - name: Merge pull requests
       run: |
+        # PR TITLE 날짜 양식확인을 위한 date 가져오기
+        TODAY=$(TZ='Asia/Seoul' date +%Y%m%d)
+
         # PR 목록 가져오기
-        PRS=$(gh pr list --state open --base main --json number --jq '.[].number')
+        PRS=$(gh pr list --state open --base main --json number,title --jq '.[].number') | select(.title | startswith("[" + "'"$TODAY"'" + "]")) | .number')
         for pr in $PRS; do
           echo "Merging PR #$pr"
           gh pr merge $pr --merge --admin
