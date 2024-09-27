@@ -87,3 +87,6 @@ class Solution {
     }
 }
 ```
+
+PRS=$(gh pr list --state open --base main --json number,title --jq '.[] | select(.title | startswith("[" + "'"$TODAY"'" + "]")) | .number')
+PRS=$(gh pr list --state open --base main --json number,title --jq '.[]) | select(.title | startswith("[" + "'"$TODAY"'" + "]")) | .number')
