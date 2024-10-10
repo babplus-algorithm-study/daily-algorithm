@@ -10,7 +10,7 @@ def solution(orders, course):
         temp = []
 
         for o in orders:
-            arr = list(combinations(o , c))
+            arr = list(combinations(sorted(o) , c))
             temp.extend(arr)
 
         word_count = Counter(temp)
