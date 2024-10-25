@@ -1,3 +1,4 @@
+```python
 from collections import deque
 
 n , m = map(int , input().split())
@@ -10,7 +11,7 @@ def bfs(n):
     queue = deque()
     queue.append((n , 0))
     visited[n] = True
-    
+
     while queue:
         num , time = queue.popleft()
         if num == m:
@@ -23,4 +24,6 @@ def bfs(n):
 result = bfs(n)
 print(result)
 
-    
+
+
+```
