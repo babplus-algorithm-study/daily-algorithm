@@ -36,17 +36,4 @@ public class P2253 {
                 dp[i][j] = Math.min((Math.min(dp[i-j][j+1],dp[i-j][j])),dp[i-j][j-1]) + 1;
             }
         }
-
-        int ans = (int)1e9;
-        for(int i = 0; i < dp[N].length; i++) {
-            ans = Math.min(ans, dp[N][i]);
-        }
-
-        if(ans == (int)1e9) System.out.println(-1);
-        else System.out.println(ans);
-
-
-    }
-}
-
 ```
