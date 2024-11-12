@@ -1,3 +1,4 @@
+```python
 import sys
 input = sys.stdin.readline
 
@@ -10,10 +11,11 @@ for i in range(201):
 
 for i in range(3 , 201):
     dp[i][1] = i
-    
+
     for j in range(2 , 201):
         dp[i][j] = (dp[i][j - 1] + dp[i - 1][j]) % 1000000000
-        
+
 
 print(dp[k][n])
-    
+
+```
