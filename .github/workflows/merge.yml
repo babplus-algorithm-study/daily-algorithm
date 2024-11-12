@@ -1,0 +1,35 @@
+name: Auto Merge PR
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]  # PR이 생성, 재열기, 업데이트될 때 트리거
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'  
+
+    - name: Install dependencies
+      run: npm install  
+
+    - name: Merge pull requests
+      run: |
+        # PR TITLE 날짜 양식확인을 위한 date 가져오기
+        TODAY=$(TZ='Asia/Seoul' date +%Y%m%d)
+
+        # PR 목록 가져오기
+        PRS=$(gh pr list --state open --base main --json number,title --jq '.[] | select(.title | startswith("[" + "'"$TODAY"'" + "]")) | .number')
+        for pr in $PRS; do
+          echo "Merging PR #$pr"
+          gh pr merge $pr --merge --admin
+        done
+      env:
+        GITHUB_TOKEN: ${{ secrets.TOKEN }}
