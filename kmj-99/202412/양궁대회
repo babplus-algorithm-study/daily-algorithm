@@ -1,0 +1,34 @@
+def solution(n, info):
+    answer = [0]*11
+    res = [0]*11
+    dfs(0,n,res,info,answer)
+    
+    return answer
+
+def dfs(index,n,res,info,answer):
+    
+    if n==0 or index==11:
+        resValue=0
+        answerValue=0
+        
+        
+        for i in range(0,11):
+            if res[i]!=0:
+                resValue+=10-i
+                
+            if answer[i]!=0:
+                answerValue+=10-i
+            
+        if resValue>answerValue:
+            answer[:] = res[:]
+            answer[10]=n
+        
+        return
+    
+    if info[index]<n:
+        res[index]+=(info[index]+1)
+        dfs(index+1,n-info[index]-1,res,info,answer)
+        res[index]-=(info[index]+1)
+        
+    dfs(index+1,n,res,info,answer)
+        
