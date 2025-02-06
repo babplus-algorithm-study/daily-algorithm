@@ -1,4 +1,5 @@
 ```python
+
 from collections import deque
 
 def checkWord(word1, word2):
@@ -27,5 +28,7 @@ def bfs(begin, target, words):
 
 def solution(begin, target, words):
     return bfs(begin, target, words)
+
+
 
 ```
