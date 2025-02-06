@@ -1,0 +1,60 @@
+```java 
+
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    static int N, M;
+    static HashMap<Integer, Integer> freq = new HashMap<>();
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
+
+        // CPTI 빈도 저장
+        for (int i = 0; i < N; i++) {
+            String s = br.readLine();
+            int mask = Integer.parseInt(s, 2); // 2진수 -> 정수 변환
+            freq.put(mask, freq.getOrDefault(mask, 0) + 1);
+        }
+
+        long result = 0;
+        List<Integer> keys = new ArrayList<>(freq.keySet());
+
+        // 해밍 거리 0 (같은 CPTI 조합)
+        for (int key : keys) {
+            int cnt = freq.get(key);
+            result += (long) cnt * (cnt - 1) / 2; // 같은 CPTI nC2 조합
+        }
+
+        // 해밍 거리 1, 2 찾기 (중복 방지)
+        for (int key : keys) {
+            int cnt = freq.get(key);
+
+            // 해밍 거리 1 (비트 하나만 다른 경우)
+            for (int i = 0; i < M; i++) {
+                int diff1 = key ^ (1 << i);
+                if (key < diff1 && freq.containsKey(diff1)) { // 중복 방지 (key < diff1)
+                    result += (long) cnt * freq.get(diff1);
+                }
+            }
+
+            // 해밍 거리 2 (비트 두 개 다른 경우)
+            for (int i = 0; i < M; i++) {
+                for (int j = i + 1; j < M; j++) {
+                    int diff2 = key ^ (1 << i) ^ (1 << j);
+                    if (key < diff2 && freq.containsKey(diff2)) { // 중복 방지 (key < diff2)
+                        result += (long) cnt * freq.get(diff2);
+                    }
+                }
+            }
+        }
+
+        System.out.println(result);
+    }
+}
+
+
+```
