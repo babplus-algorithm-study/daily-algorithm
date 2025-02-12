@@ -126,6 +126,8 @@ public class Main {
 		
 		return seg[idx];
 	}
+    
+    
 }
 
 ```
