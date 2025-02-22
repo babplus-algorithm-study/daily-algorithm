@@ -1,0 +1,41 @@
+```java
+
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+        int n = sc.nextInt();
+
+        int[] d = new int[n + 1];  // LIS 길이를 저장하는 배열
+        int[] num = new int[n + 1]; // 입력 숫자 배열 (1-based index)
+        
+        for (int i = 1; i <= n; i++) {
+            num[i] = sc.nextInt();
+            d[i] = 1; // LIS 초기값 1로 설정
+        }
+
+        // 가장 긴 증가하는 부분 수열 찾기 (O(n^2) 방식)
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j < i; j++) {
+                if (num[j] < num[i]) {
+                    d[i] = Math.max(d[i], d[j] + 1);
+                }
+            }
+        }
+
+        // LIS의 최대 길이 찾기
+        int maxLIS = 0;
+        for (int i = 1; i <= n; i++) {
+            maxLIS = Math.max(maxLIS, d[i]);
+        }
+
+        // n - LIS 길이 = 제거해야 하는 최소 개수
+        System.out.println(n - maxLIS);
+
+        sc.close();
+    }
+}
+
+
+```
