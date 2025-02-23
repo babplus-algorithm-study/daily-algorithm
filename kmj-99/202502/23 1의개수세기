@@ -1,0 +1,37 @@
+```java
+
+import java.util.Scanner;
+
+public class Main {
+    static long a, b;
+    static long[] d = new long[55];
+
+    static long go(long x, int i) {
+        long ans = x & 1;
+        for (; i > 0; i--) {
+            if ((x & (1L << i)) != 0) {
+                ans += d[i - 1] + (x - (1L << i) + 1);
+                x -= 1L << i;
+            }
+        }
+        return ans;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        d[0] = 1;
+        for (int i = 1; i < 55; i++) {
+            d[i] = d[i - 1] * 2 + (1L << i);
+        }
+
+        a = sc.nextLong();
+        b = sc.nextLong();
+        sc.close();
+
+        System.out.println(go(b, 54) - go(a - 1, 54));
+    }
+}
+
+
+```
