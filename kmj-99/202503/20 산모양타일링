@@ -1,0 +1,32 @@
+```java
+
+public class Solution {
+    public int solution(int n, int[] tops) {
+        final int MOD = 10007;
+        int[] dp1 = new int[n];
+        int[] dp2 = new int[n];
+
+        dp1[0] = 1;
+        dp2[0] = 2 + tops[0];
+
+        for (int i = 1; i < n; i++) {
+            dp1[i] = (dp1[i - 1] + dp2[i - 1]) % MOD;
+            dp2[i] = ((dp1[i - 1] * (1 + tops[i])) + (dp2[i - 1] * (2 + tops[i]))) % MOD;
+        }
+
+        return (dp1[n - 1] + dp2[n - 1]) % MOD;
+    }
+
+    // 테스트용 메인 메서드
+    public static void main(String[] args) {
+        Solution sol = new Solution();
+        int n = 3;
+        int[] tops = {1, 0, 1};
+        System.out.println(sol.solution(n, tops)); // 예상 결과: 40
+    }
+}
+
+
+
+
+```
