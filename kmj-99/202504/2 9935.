@@ -1,0 +1,64 @@
+```java
+
+import java.util.*;
+import java.io.*;
+
+public class Main {
+
+    static String str;
+    static String strExplosion;
+
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+
+
+
+        str = br.readLine();
+        strExplosion = br.readLine();
+
+        Stack<Character> stack = new Stack<Character>();
+        for(int i =0; i<str.length(); i++){
+            stack.push(str.charAt(i));
+
+            if(stack.size()>=strExplosion.length()){
+                boolean isBoom = true;
+                for(int j = 0; j<strExplosion.length(); j++){
+                    if(stack.get(stack.size() - strExplosion.length()+j) != strExplosion.charAt(j)){
+                        isBoom = false;
+                        break;
+                    }
+                }
+
+                if(isBoom){
+                    for(int k=0; k<strExplosion.length(); k++){
+                        stack.pop();
+                    }
+                }
+            }
+        }
+
+        if(stack.isEmpty()){
+            bw.write("FRULA");
+
+        }else{
+            StringBuilder sb = new StringBuilder();
+            for(Character i : stack){
+                sb.append(i);
+            }
+            bw.write(sb.toString());
+        }
+
+        bw.flush();
+        bw.close();
+    }
+
+}
+
+
+
+
+
+
+```
