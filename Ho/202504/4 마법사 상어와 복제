@@ -1,0 +1,254 @@
+```
+import java.util.*;
+import java.io.*;
+
+public class Main {
+	static final int MAX_SIZE = 4;
+	static final int MOVE_LIMIT = 3;
+	static int M, S;
+	static Fish shark;
+	static int[] drs4 = {-1, 0 ,1, 0};
+	static int[] dcs4 = {0, -1, 0 ,1};
+	static int[] drs8 = {0, -1, -1, -1, 0 ,1, 1, 1};
+	static int[] dcs8 = {-1, -1, 0, 1, 1, 1, 0, -1};
+	
+	static ArrayList<Fish>[] fishs = new ArrayList[MAX_SIZE << 2];
+	static int[][] counts = new int[MAX_SIZE][MAX_SIZE];
+	static int[][] memoSmell = new int[MAX_SIZE][MAX_SIZE];
+	static Queue<Fish> q = new ArrayDeque<>();
+	
+	// 상어관련 전역변수
+	static int[] sPath = new int[MOVE_LIMIT];
+	static int[] tPath = new int[MOVE_LIMIT];
+	static int[][] sVisited;
+	static int preMax = 0;
+						
+    public static void main(String[] args) throws IOException {
+    	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    	StringTokenizer st = new StringTokenizer(br.readLine());
+    	
+    	M = Integer.parseInt(st.nextToken());
+    	S = Integer.parseInt(st.nextToken());
+    	
+    	for(int i = 0; i < MAX_SIZE << 2; i++) {
+    		fishs[i] = new ArrayList<>();
+    	}
+    	
+    	
+    	for(int i = 0; i < M; i++) {
+    		st = new StringTokenizer(br.readLine());
+    		
+    		int r = Integer.parseInt(st.nextToken()) - 1;
+    		int c = Integer.parseInt(st.nextToken()) - 1;
+    		int d = Integer.parseInt(st.nextToken()) - 1;
+    		
+    		counts[r][c]++;
+    		int idx = convertIdx(r, c);
+    		fishs[idx].add(new Fish(r,c,d));
+    	}
+    	
+    	st = new StringTokenizer(br.readLine());
+    	
+    	int sr = Integer.parseInt(st.nextToken()) - 1;
+    	int sc = Integer.parseInt(st.nextToken()) - 1;
+    	
+    	shark = new Fish(sr, sc, 0);
+    	
+    	for(int i = 0; i < S; i++) {
+        	memoFish();
+        	moveFish();
+        	moveShark();
+        	reduceFishSmell();
+        	copyFish();
+    	}
+    	
+    	int sum = 0;
+    	
+    	for(int i = 0; i < MAX_SIZE; i++) {
+    		for(int j = 0; j < MAX_SIZE; j++) {
+    			sum += counts[i][j];
+    		}
+    	}
+    	
+    	System.out.println(sum);
+    	
+    	
+    }
+    
+
+    
+    static class Fish {
+    	int row;
+    	int col;
+    	int dir;
+    	int idx;
+    	
+    	Fish(int r, int c , int d) {
+    		row = r;
+    		col = c;
+    		dir = d;
+    		idx = convertIdx(r,c);
+    	}
+    }
+    
+    
+    static private int convertIdx(int r, int c) {
+    	return  r * MAX_SIZE + c;
+    }
+    
+    //1. 복제 마법을 시작할 당시 존재했던 물고기 정보 관리
+    private static void memoFish() {
+    	q = new ArrayDeque<>();
+    	
+    	for(int i = 0; i < fishs.length; i++) {
+    		for(int j = 0; j < fishs[i].size(); j++) {
+    			Fish curFish = fishs[i].get(j);
+    			
+    			q.add(new Fish(curFish.row , curFish.col, curFish.dir));
+    		}
+    	}
+    }
+    
+    private static void moveFish() {
+    	//이동불가능하면 가만히, 아니면 움직이기
+    	ArrayList<Fish>[] movedFishs = new ArrayList[MAX_SIZE << 2];
+    	for(int i = 0; i < MAX_SIZE << 2; i++) {
+    		movedFishs[i] = new ArrayList<>();
+    	}
+    	
+    	for(int i = 0; i < fishs.length; i++) {
+    		for(int j = 0; j < fishs[i].size(); j++) {
+    			
+    			Fish curFish = fishs[i].get(j);
+    			
+    			for(int k = 0; k < 8; k++) {
+    				int dir = (curFish.dir - k);
+    				
+    				if(dir < 0) dir += 8;
+    				
+    				int nr = curFish.row + drs8[dir];
+    				int nc = curFish.col + dcs8[dir];
+    				
+    				if(canMove(nr, nc)) {
+    					//이동 가능한 경우
+    					counts[curFish.row][curFish.col]--; // 이동 감소
+    					curFish.row = nr;
+    					curFish.col = nc;
+    					curFish.dir = dir;
+    					counts[nr][nc]++; //이동 증가 
+    					break;
+    				}
+    			}
+    			int moveIdx = convertIdx(curFish.row, curFish.col);
+    			movedFishs[moveIdx].add(curFish);
+    		}
+    	}
+    	
+    	fishs = movedFishs;
+    }
+    
+    // 2. 물고기 이동 관리하기
+    private static boolean canMove(int r, int c) {
+    	if(!inRange(r, c)) return false;
+    	if(canSmellFish(r,c)) return false;
+    	if(isSharkArea(r, c)) return false;
+    	return true;
+    }
+    
+    //상어가 있는 칸
+    private static boolean isSharkArea(int r, int c) {
+    	return shark.row == r && shark.col == c;
+    }
+    
+    //물고기 냄새가 있는 칸
+    private static boolean canSmellFish(int r, int c) {
+    	return memoSmell[r][c] > 0;
+    }
+    
+    //격자의 범위를 벗어나는 칸 이동불가
+    private static boolean inRange(int r, int c) {
+    	return r >= 0 &&  r < MAX_SIZE && c >= 0 && c < MAX_SIZE;
+    }
+    
+    // 3. 상어는 연속 3칸 이동 = 상좌하우로
+    private static void moveShark() {
+    	sPath = new int[MOVE_LIMIT];
+    	tPath = new int[MOVE_LIMIT];
+    	boolean[][] used = new boolean[MAX_SIZE][MAX_SIZE];
+    	preMax = -1;
+    	
+    	Arrays.fill(sPath, 5);
+    	dfs(shark.row, shark.col, 0, 0,used);
+    	//이동할 수 있는 경우만 이동하고 흔적 남기기
+    	
+    	for(int i = 0; i < MOVE_LIMIT; i++) {
+    		shark.row += drs4[sPath[i]];
+    		shark.col += dcs4[sPath[i]];
+    		
+    		if(counts[shark.row][shark.col] > 0) {
+    			memoSmell[shark.row][shark.col] = 3;
+    			fishs[(shark.row * MAX_SIZE) + shark.col] = new ArrayList<>();
+    			counts[shark.row][shark.col] = 0;
+    		}
+    	}
+    }
+    
+    private static void dfs(int r, int c, int depth, int cnt, boolean[][] used) {
+    	if(depth == MOVE_LIMIT) {
+    		if(preMax < cnt) {
+    			preMax = cnt;
+    			
+    			// 사전순으로 해야함
+    			for(int i = 0; i < MOVE_LIMIT; i++) {
+    				sPath[i] = tPath[i];
+    			}
+    		}
+    		return;
+    	}
+    	
+    	for(int i = 0; i < 4; i++) {
+    		int nr = r + drs4[i];
+    		int nc = c + dcs4[i];
+    		
+    		if(!inRange(nr,nc)) continue;
+    		tPath[depth] = i;
+    		
+    		int size = used[nr][nc] ? 0 : counts[nr][nc];
+    		used[nr][nc] = true;
+    		dfs(nr,nc,depth + 1,cnt + size, used);
+    		if(size != 0)
+    		used[nr][nc] = false;
+    	}
+    }
+    
+    private static boolean canMoveShark(int r, int c) {
+    	if(!inRange(r,c)) return false;
+    	//if(sVisited[r][c]) return false;
+    	return true;
+    }
+    
+    private static void reduceFishSmell() {
+    	for(int i = 0; i < MAX_SIZE; i++) {
+    		for(int j = 0; j < MAX_SIZE; j++) {
+    			if(memoSmell[i][j] > 0) memoSmell[i][j]--;
+    		}
+    	}
+    }
+    
+    private static void copyFish() {
+    	while(!q.isEmpty()) {
+    		Fish fish = q.poll();
+    		
+    		int idx = convertIdx(fish.row, fish.col);
+    		
+    		fishs[idx].add(fish);
+    		counts[fish.row][fish.col]++;
+    	}
+    }
+       
+}
+```
+
+
+
+
