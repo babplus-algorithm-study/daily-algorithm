@@ -1,0 +1,58 @@
+```java
+import java.io.*;
+import java.util.*;
+
+class Main {
+    static int N,S, M;
+    static int[] V;
+    static boolean[][] dp;
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        N = Integer.parseInt(st.nextToken());
+        S = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
+        V = new int[N+1];
+        dp = new boolean[N+1][M+1];
+
+        StringTokenizer st2 = new StringTokenizer(br.readLine());
+        for (int i=1; i<=N; i++){
+            V[i] = Integer.parseInt(st2.nextToken());
+        }
+
+        if(S+V[1] <= M){
+            dp[1][S+V[1]] = true;
+        }
+
+        if(S-V[1] >= 0){
+            dp[1][S-V[1]] = true;
+        }
+
+        for(int i=2; i<=N; i++){
+            for(int j=0; j<=M; j++){
+                if(dp[i - 1][j]){
+                    if(j + V[i] <= M) dp[i][j + V[i]] = true;
+                    if(j - V[i] >= 0) dp[i][j - V[i]] = true;
+                }
+            }
+        }
+
+        for(int i=M; i>=0; i--){
+            if(dp[N][i]){
+                bw.write(i + "");
+                bw.flush();
+                bw.close();
+                return;
+            }
+        }
+
+        bw.write("-1");
+        bw.flush();
+        bw.close();
+    }
+}
+
+
+```
