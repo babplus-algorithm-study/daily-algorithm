@@ -1,0 +1,108 @@
+```java
+import java.io.*;
+import java.util.*;
+
+class Main {
+    static int[][] map;
+    static int answer = Integer.MAX_VALUE;
+    static int[] use = new int[5];
+
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+
+        Arrays.fill(use, 0);
+
+        map = new int[10][10];
+        for(int i=0; i<10; i++){
+            StringTokenizer st = new StringTokenizer(br.readLine());
+            for(int j=0; j<10; j++){
+                map[i][j] = Integer.parseInt(st.nextToken());
+            }
+        }
+
+
+        dfs(0,0);
+        if(answer == Integer.MAX_VALUE){
+            bw.write("-1");
+        }else{
+            bw.write(answer+"");
+        }
+        bw.flush();
+        bw.close();
+    }
+
+    public static void dfs(int depth, int count){
+        if(depth == 100){
+            if(isCover()){
+                answer = Math.min(answer, count);
+            }
+            return;
+        }
+
+        int x = depth/10;
+        int y = depth%10;
+
+        if(map[x][y] == 0){
+            dfs(depth+1,count);
+            return;
+        }
+
+        boolean isRight = false;
+
+        for(int i=0; i<5; i++){
+
+            if(x+i>=10 || y+i>=10) break;
+            if(use[i]>=5 || !isValid(x,y,i)) continue;
+            isRight = true;
+
+            cover(x,y,i);
+            use[i] +=1;
+            dfs(depth+1, count+1);
+            use[i] -=1;
+            uncover(x,y, i);
+        }
+
+        if(!isRight) dfs(depth+1, count);
+
+    }
+
+    public static void cover(int x, int y, int size){
+        for(int i=x; i<=x+size; i++){
+            for(int j=y; j<=y+size; j++){
+                map[i][j] = 0;
+            }
+        }
+    }
+
+    public static void uncover(int x, int y, int size){
+        for(int i=x; i<=x+size; i++){
+            for(int j=y; j<=y+size; j++){
+                map[i][j] = 1;
+            }
+        }
+    }
+
+    public static boolean isValid(int x, int y, int size){
+        for(int i=x; i<=x+size; i++){
+            for(int j=y; j<=y+size; j++){
+                if(map[i][j] == 0) return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean isCover(){
+        for(int i=0; i<10; i++){
+            for(int j=0; j<10; j++){
+                if(map[i][j] == 1) return false;
+            }
+        }
+
+        return true;
+    }
+
+}
+
+
+```
