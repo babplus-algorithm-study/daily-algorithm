@@ -29,7 +29,7 @@ jobs:
         PRS=$(gh pr list --state open --base main --json number,title --jq '.[] | select(.title | startswith("[" + "'"$TODAY"'" + "]")) | .number')
         for pr in $PRS; do
           echo "Merging PR #$pr"
-          gh pr merge $pr --merge --admin
+          gh pr merge $pr --squash --admin
         done
       env:
         GITHUB_TOKEN: ${{ secrets.TOKEN }}
